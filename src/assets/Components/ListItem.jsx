@@ -3,17 +3,28 @@ import classes from "./ListItem.module.css";
 export default function ListItem(props) {
   const handleDelete = () => {
     if (props.disabled) {
-      props.setError(true);
+      props.setError();
       return;
     }
-    props.onDelete(props.index);
+    props.onDelete(props.toDo.id);
   };
 
-  const handleEdit = () => props.onEdit(props.content, props.index);
+  function markDoneHandler(e) {
+    if (e.target.children.length >= 2) {
+      props.markDone(props.toDo.id);
+    }
+  }
+
+  const handleEdit = () => props.onEdit(props.toDo.content, props.toDo.id);
 
   return (
-    <div className={classes.itemContainer}>
-      <p className={classes.content}>{props.content}</p>
+    <div
+      className={`${classes.itemContainer} ${
+        props.toDo.done ? classes.done : ""
+      }`}
+      onClick={markDoneHandler}
+    >
+      <p className={classes.content}>{props.toDo.content}</p>
       <div className={classes.btnContainer}>
         <button
           onClick={handleEdit}

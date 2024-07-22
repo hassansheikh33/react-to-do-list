@@ -1,7 +1,7 @@
 #root {
   background-color: white;
-  width: 700px;
-  max-width: 1000px;
+  width: 800px;
+  /* max-width: 1000px; */
   margin: 0 auto;
   padding: 1rem;
   display: flex;
@@ -16,6 +16,7 @@
   width: 66%;
   max-width: 70%;
   display: flex;
+  justify-content: center;
   align-items: center;
 }
 
@@ -69,10 +70,29 @@
 
 .clearlistBtn {
   background-color: rgb(245, 67, 67);
+}
+
+.btn {
   color: white;
   border: none;
   padding: 0.4rem 0.5rem;
   border-radius: 5px;
+  font-size: 1rem;
+  cursor: pointer;
+}
+
+.delDoneBtn {
+  margin-left: 5px;
+  background-color: rgb(148, 196, 77);
+}
+
+.markAllBtn {
+  background-color: orange;
+  margin-left: 5px;
+}
+
+.btnContainer {
+  margin-bottom: 1rem;
 }
 
 @media (prefers-reduced-motion: no-preference) {
