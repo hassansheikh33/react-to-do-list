@@ -1,45 +1,82 @@
 #root {
   background-color: white;
+  width: 700px;
   max-width: 1000px;
   margin: 0 auto;
-  padding: 2rem;
-  text-align: center;
+  padding: 1rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
   border-radius: 12px;
   box-shadow: 0 0 7px 10px rgba(0, 0, 0, 0.1);
 }
 
-.logo {
-  height: 6em;
-  padding: 1.5em;
-  will-change: filter;
-  transition: filter 300ms;
-}
-.logo:hover {
-  filter: drop-shadow(0 0 2em #646cffaa);
-}
-.logo.react:hover {
-  filter: drop-shadow(0 0 2em #61dafbaa);
+.form {
+  width: 66%;
+  max-width: 70%;
+  display: flex;
+  align-items: center;
 }
 
-@keyframes logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+.input {
+  font-size: 1em;
+  border-radius: 8px;
+  width: 320px;
+  max-width: 350px;
+  border: 1px solid rgb(156, 156, 156);
+  padding: 0.6rem 0.7rem;
+}
+
+.input:focus-visible {
+  outline: none;
+}
+
+.error {
+  border: 1px solid salmon;
+}
+
+.errorText {
+  color: salmon;
+}
+.ul {
+  list-style-type: none;
+  padding: 0;
+  width: 100%;
+  margin-bottom: 10px;
+}
+
+.button {
+  border-radius: 8px;
+  border: 1px solid transparent;
+  padding: 0.6rem 0.7rem;
+  font-size: 1em;
+  font-weight: 500;
+  font-family: inherit;
+  background-color: #3195cf;
+  cursor: pointer;
+  transition: border-color 0.25s;
+  color: white;
+  min-width: 100px;
+  margin-left: 5px;
+}
+
+.button:hover {
+  border: 1.5px solid #16435e;
+  color: whitesmoke;
+  box-shadow: 0px 0px 5px 5px rgba(0, 0, 0, 0.1);
+}
+
+.clearlistBtn {
+  background-color: rgb(245, 67, 67);
+  color: white;
+  border: none;
+  padding: 0.4rem 0.5rem;
+  border-radius: 5px;
 }
 
 @media (prefers-reduced-motion: no-preference) {
   a:nth-of-type(2) .logo {
     animation: logo-spin infinite 20s linear;
   }
-}
-
-.card {
-  padding: 2em;
-}
-
-.read-the-docs {
-  color: #888;
 }

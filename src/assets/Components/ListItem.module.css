@@ -1,0 +1,46 @@
+.itemContainer {
+  min-height: 5vh;
+  height: 40px;
+  border-radius: 8px;
+  max-width: 80%;
+  margin: auto;
+  padding: 0.3rem 0.8rem;
+  border: 1px solid grey;
+  margin-bottom: 0.8rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.content {
+  font-weight: 400;
+  font-size: 1.1rem;
+}
+
+.btnContainer {
+  display: flex;
+  justify-content: space-between;
+}
+
+.btn {
+  border-radius: 8px;
+  border: none;
+  color: white;
+  padding: 0.3rem 0.7rem;
+  cursor: pointer;
+}
+
+.btn:hover {
+  box-shadow: 0px 0px 4px 4px rgba(0, 0, 0, 0.1);
+}
+
+.editBtn {
+  background-color: #3195cf;
+}
+
+.delBtn {
+  margin-left: 5px;
+  background-color: salmon;
+  text-align: center;
+  font-size: 0.9rem;
+}
