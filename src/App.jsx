@@ -6,7 +6,7 @@ let first = true;
 
 function App() {
   const [toDos, setToDos] = useState([
-    { content: "make a react component", id: 12313213, done: false },
+    { content: "make a local component", id: 12313213, done: true },
     { content: "make a angular state", id: 34532, done: false },
   ]);
 
@@ -20,10 +20,56 @@ function App() {
   const [value, setValue] = useState("");
   const [error, setError] = useState(null);
   const [mode, setMode] = useState("submit");
-  const [previousMode, setPreviousMode] = useState('');
+  const [previousMode, setPreviousMode] = useState("");
   const [editId, setEditId] = useState(null);
 
- function addToDoHandler(e) {
+  useEffect(() => {
+    async function fetchToDos() {
+      setError(null);
+      try {
+        const response = await fetch(
+          "https://react-to-do-list-86143-default-rtdb.firebaseio.com/toDos.json"
+        );
+        if (!response.ok) {
+          console.log("error ", response.statusText);
+          throw new Error(`could not fetch ToDos, ${response.statusText}`);
+        }
+        const data = await response.json();
+        setToDos(data);
+      } catch (err) {
+        setError({ text: err.message });
+      }
+    }
+
+    fetchToDos();
+  }, []);
+
+  useEffect(() => {
+    async function sendToDos() {
+      setError(null);
+      try {
+        const response = await fetch(
+          `https://react-to-do-list-86143-default-rtdb.firebaseio.com/toDos.json`,
+          {
+            method: "PUT",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify(toDos),
+          }
+        );
+        if (!response.ok) {
+          throw new Error(`could not send ToDos, ${response.statusText}`);
+        }
+        console.log("sent response ", response);
+      } catch (err) {
+        setError({ text: err.message });
+      }
+    }
+    sendToDos();
+  }, [toDos]);
+
+  function addToDoHandler(e) {
     e.preventDefault();
 
     if (mode === "search") {
@@ -91,7 +137,6 @@ function App() {
 
   function onEdit(val, itemId) {
     setPreviousMode(mode);
-    console.log(mode);
     setMode("edit");
     setValue(val);
     setEditId(itemId);
@@ -178,16 +223,6 @@ function App() {
       );
       return updatedItem ? { ...toDo, ...updatedItem } : toDo;
     });
-    // const total = [];
-    // toDos.map((toDo) => {
-    //   filteredResults.map((filteredResult) => {
-    //     if (toDo.id === filteredResult.id) {
-    //       total.push({ ...toDo, ...filteredResult });
-    //     } else if (toDo.id !== filteredResult.id) {
-    //       return;
-    //     }
-    //   });
-    // });
     setToDos(updatedToDos);
     setFilteredResults([]);
     setValue("");
@@ -250,13 +285,13 @@ function App() {
             ? "Save Changes"
             : "Search"}
         </button>
-        {mode === "submit" && toDos.length >0 && (
+        {mode === "submit" && toDos.length > 0 && (
           <button
             className="button"
             style={{
               backgroundColor: "yellow",
               color: "grey",
-              paddingRight: '1.2rem'
+              paddingRight: "1.2rem",
             }}
             onClick={searchHandler}
           >
@@ -280,81 +315,81 @@ function App() {
       {
         <>
           {mode === "submit" && (
-              <ul className="ul">
-                {toDos.map((toDo) => (
-                  <ListItem
-                    key={toDo.id}
-                    toDo={toDo}
-                    onEdit={onEdit}
-                    onDelete={onDelete}
-                    disabled={mode === "edit"}
-                    markDone={markDoneHandler}
-                    setError={() => {
-                      setError({
-                        text: "Please save changes before deleting any task",
-                      });
-                    }}
-                  />
-                ))}
-              </ul>
-            )}
+            <ul className="ul">
+              {toDos.map((toDo) => (
+                <ListItem
+                  key={toDo.id}
+                  toDo={toDo}
+                  onEdit={onEdit}
+                  onDelete={onDelete}
+                  disabled={mode === "edit"}
+                  markDone={markDoneHandler}
+                  setError={() => {
+                    setError({
+                      text: "Please save changes before deleting any task",
+                    });
+                  }}
+                />
+              ))}
+            </ul>
+          )}
           {mode === "search" && filteredResults.length > 0 && (
-              <ul className="ul">
-                {filteredResults.map((toDo) => (
-                  <ListItem
-                    key={toDo.id}
-                    toDo={toDo}
-                    onEdit={onEdit}
-                    onDelete={onDelete}
-                    disabled={mode === "edit"}
-                    markDone={markDoneHandler}
-                    setError={() => {
-                      setError({
-                        text: "Please save changes before deleting any task",
-                      });
-                    }}
-                  />
-                ))}
-              </ul>
-            )}
-            {mode === "edit" && previousMode==='submit' && (
-              <ul className="ul">
-                {toDos.map((toDo) => (
-                  <ListItem
-                    key={toDo.id}
-                    toDo={toDo}
-                    onEdit={onEdit}
-                    onDelete={onDelete}
-                    disabled={mode === "edit"}
-                    markDone={markDoneHandler}
-                    setError={() => {
-                      setError({
-                        text: "Please save changes before deleting any task",
-                      });
-                    }}
-                  />
-                ))}
-              </ul>
-            )}
-            {mode === "edit" && previousMode==='search' && (
-              <ul className="ul">
-                {filteredResults.map((toDo) => (
-                  <ListItem
-                    key={toDo.id}
-                    toDo={toDo}
-                    onEdit={onEdit}
-                    onDelete={onDelete}
-                    disabled={mode === "edit"}
-                    markDone={markDoneHandler}
-                    setError={() => {
-                      setError({
-                        text: "Please save changes before deleting any task",
-                      });
-                    }}
-                  />
-                ))}
-              </ul>
-            )}
+            <ul className="ul">
+              {filteredResults.map((toDo) => (
+                <ListItem
+                  key={toDo.id}
+                  toDo={toDo}
+                  onEdit={onEdit}
+                  onDelete={onDelete}
+                  disabled={mode === "edit"}
+                  markDone={markDoneHandler}
+                  setError={() => {
+                    setError({
+                      text: "Please save changes before deleting any task",
+                    });
+                  }}
+                />
+              ))}
+            </ul>
+          )}
+          {mode === "edit" && previousMode === "submit" && (
+            <ul className="ul">
+              {toDos.map((toDo) => (
+                <ListItem
+                  key={toDo.id}
+                  toDo={toDo}
+                  onEdit={onEdit}
+                  onDelete={onDelete}
+                  disabled={mode === "edit"}
+                  markDone={markDoneHandler}
+                  setError={() => {
+                    setError({
+                      text: "Please save changes before deleting any task",
+                    });
+                  }}
+                />
+              ))}
+            </ul>
+          )}
+          {mode === "edit" && previousMode === "search" && (
+            <ul className="ul">
+              {filteredResults.map((toDo) => (
+                <ListItem
+                  key={toDo.id}
+                  toDo={toDo}
+                  onEdit={onEdit}
+                  onDelete={onDelete}
+                  disabled={mode === "edit"}
+                  markDone={markDoneHandler}
+                  setError={() => {
+                    setError({
+                      text: "Please save changes before deleting any task",
+                    });
+                  }}
+                />
+              ))}
+            </ul>
+          )}
           {filteredResults.length === 0 && mode === "search" && (
             <p className="errorText">No Results Found !</p>
           )}
@@ -362,44 +397,50 @@ function App() {
             <p className="errorText">You have no tasks, please add some !</p>
           )}
           {mode === "submit" && doneToDos.length > 0 && (
-            <p style={{marginTop: 0}}>{`You have done ${0 + doneToDos.length}/${
-              toDos.length
-            } tasks`}</p>
+            <p style={{ marginTop: 0 }}>{`You have done ${
+              0 + doneToDos.length
+            }/${toDos.length} tasks`}</p>
           )}
           {mode === "search" && doneFilteredToDos.length > 0 && (
-            <p style={{marginTop: 0}}>{`You have done ${0 + doneFilteredToDos.length}/${
-              filteredResults.length
-            } tasks`}</p>
+            <p style={{ marginTop: 0 }}>{`You have done ${
+              0 + doneFilteredToDos.length
+            }/${filteredResults.length} tasks`}</p>
           )}
-          {mode === "edit" && previousMode ==='search' && doneFilteredToDos.length > 0 && (
-            <p style={{marginTop: 0}}>{`You have done ${0 + doneFilteredToDos.length}/${
-              toDos.length
-            } tasks`}</p>
-          )}
-          {mode === "edit" && previousMode ==='submit' && doneToDos.length > 0 && (
-            <p style={{marginTop: 0}}>{`You have done ${0 + doneToDos.length}/${
-              toDos.length
-            } tasks`}</p>
-          )}
-          {toDos.length>0 && <div className="btnContainer">
-            <button className="clearlistBtn btn" onClick={clearListHandler}>
-              Clear List
-            </button>
-            <button className="delDoneBtn btn" onClick={delDoneHandler}>
-              Delete Tasks which are marked done
-            </button>
-            <button className="markAllBtn btn" onClick={markAllHandler}>
-              {mode !== "search"
-                ? doneToDos.length < toDos.length
+          {mode === "edit" &&
+            previousMode === "search" &&
+            doneFilteredToDos.length > 0 && (
+              <p style={{ marginTop: 0 }}>{`You have done ${
+                0 + doneFilteredToDos.length
+              }/${toDos.length} tasks`}</p>
+            )}
+          {mode === "edit" &&
+            previousMode === "submit" &&
+            doneToDos.length > 0 && (
+              <p style={{ marginTop: 0 }}>{`You have done ${
+                0 + doneToDos.length
+              }/${toDos.length} tasks`}</p>
+            )}
+          {toDos.length > 0 && (
+            <div className="btnContainer">
+              <button className="clearlistBtn btn" onClick={clearListHandler}>
+                Clear List
+              </button>
+              <button className="delDoneBtn btn" onClick={delDoneHandler}>
+                Delete Tasks which are marked done
+              </button>
+              <button className="markAllBtn btn" onClick={markAllHandler}>
+                {mode !== "search"
+                  ? doneToDos.length < toDos.length
+                    ? "Mark All as Done"
+                    : "Mark All as UnDone"
+                  : doneFilteredToDos.length < filteredResults.length
                   ? "Mark All as Done"
-                  : "Mark All as UnDone"
-                : doneFilteredToDos.length < filteredResults.length
-                ? "Mark All as Done"
-                : "Mark All as UnDone"}
-            </button>
-          </div>}
+                  : "Mark All as UnDone"}
+              </button>
+            </div>
+          )}
         </>
-   }
+      }
     </>
   );
 }
