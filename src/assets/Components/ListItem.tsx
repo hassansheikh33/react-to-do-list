@@ -1,6 +1,16 @@
 import classes from "./ListItem.module.css";
+import { toDo } from "../../tyes";
 
-export default function ListItem(props) {
+interface Props {
+  toDo: toDo;
+  onEdit: (val: string, editId: number) => void;
+  disabled: boolean;
+  onDelete: (id: number) => void;
+  setError: () => void;
+  markDone: (id: number) => void;
+}
+
+export default function ListItem(props: Props) {
   const handleDelete = () => {
     if (props.disabled) {
       props.setError();
@@ -9,8 +19,9 @@ export default function ListItem(props) {
     props.onDelete(props.toDo.id);
   };
 
-  function markDoneHandler(e) {
-    if (e.target.children.length >= 2) {
+  function markDoneHandler(e: React.MouseEvent) {
+    const target = e.target as HTMLElement;
+    if (target.children.length >= 2) {
       props.markDone(props.toDo.id);
     }
   }
@@ -32,13 +43,12 @@ export default function ListItem(props) {
         >
           Edit
         </button>
-        <div
+        <button
           onClick={handleDelete}
           className={`${classes.delBtn} ${classes.btn}`}
-          disabled={props.disabled}
         >
           Delete
-        </div>
+        </button>
       </div>
     </div>
   );

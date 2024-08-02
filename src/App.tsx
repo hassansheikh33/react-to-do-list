@@ -1,27 +1,21 @@
-import { useEffect, useState } from "react";
+import { ChangeEvent, FormEvent, useEffect, useState } from "react";
 import "./App.css";
-import ListItem from "./assets/Components/ListItem";
+import ListItem from "./assets/Components/ListItem.tsx";
+import { toDo } from "./tyes.ts";
 
-let first = true;
-
-function App() {
-  const [toDos, setToDos] = useState([
-    { content: "make a local component", id: 12313213, done: true },
-    { content: "make a angular state", id: 34532, done: false },
+function App(): JSX.Element {
+  const [toDos, setToDos] = useState<toDo[]>([
+    { id: 4531, content: "react project", done: false },
+    { id: 32432, content: "react todo list", done: true },
   ]);
-
-  const doneToDos = toDos.filter((toDo) => toDo.done === true);
-
-  const [filteredResults, setFilteredResults] = useState([]);
-  const doneFilteredToDos = filteredResults.filter(
-    (filItem) => filItem.done === true
+  const [value, setValue] = useState<string>("");
+  const [error, setError] = useState<{ type?: string; text?: string } | null>(
+    null
   );
-
-  const [value, setValue] = useState("");
-  const [error, setError] = useState(null);
-  const [mode, setMode] = useState("submit");
-  const [previousMode, setPreviousMode] = useState("");
-  const [editId, setEditId] = useState(null);
+  type Mode = "submit" | "search" | "edit";
+  const [mode, setMode] = useState<Mode>("submit");
+  const [previousMode, setPreviousMode] = useState<string>("");
+  const [editId, setEditId] = useState<number | null>(null);
 
   useEffect(() => {
     async function fetchToDos() {
@@ -31,13 +25,19 @@ function App() {
           "https://react-to-do-list-86143-default-rtdb.firebaseio.com/toDos.json"
         );
         if (!response.ok) {
-          console.log("error ", response.statusText);
           throw new Error(`could not fetch ToDos, ${response.statusText}`);
         }
         const data = await response.json();
-        setToDos(data);
+        if (data) {
+          console.log("data ", data);
+          setToDos(data);
+          return;
+        }
+        console.log("brought empty data", data);
       } catch (err) {
-        setError({ text: err.message });
+        if (err instanceof Error) {
+          setError({ text: err.message });
+        }
       }
     }
 
@@ -61,15 +61,26 @@ function App() {
         if (!response.ok) {
           throw new Error(`could not send ToDos, ${response.statusText}`);
         }
-        console.log("sent response ", response);
       } catch (err) {
-        setError({ text: err.message });
+        if (err instanceof Error) {
+          setError({ text: err.message });
+        }
       }
     }
-    sendToDos();
+    if (toDos) {
+      sendToDos();
+    } else {
+      console.log("yahan  problem hai");
+    }
   }, [toDos]);
 
-  function addToDoHandler(e) {
+  const doneToDos = toDos.filter((toDo) => toDo.done === true);
+
+  const [filteredResults, setFilteredResults] = useState<toDo[]>([]);
+  const doneFilteredToDos = filteredResults.filter(
+    (filItem) => filItem.done === true
+  );
+  function addToDoHandler(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
 
     if (mode === "search") {
@@ -131,18 +142,18 @@ function App() {
     setValue("");
   }
 
-  function changeHandler(e) {
+  function changeHandler(e: ChangeEvent<HTMLInputElement>) {
     setValue(e.target.value);
   }
 
-  function onEdit(val, itemId) {
+  function onEdit(val: string, itemId: number) {
     setPreviousMode(mode);
     setMode("edit");
     setValue(val);
     setEditId(itemId);
   }
 
-  function onDelete(itemId) {
+  function onDelete(itemId: number) {
     setToDos((state) => state.filter((toDo) => toDo.id !== itemId));
   }
 
@@ -155,7 +166,7 @@ function App() {
     }
   }
 
-  function markDoneHandler(id) {
+  function markDoneHandler(id: number) {
     if (mode !== "search") {
       setToDos((state) =>
         state.map((item) => {
@@ -231,21 +242,7 @@ function App() {
 
   return (
     <>
-      <h1
-        className="h1"
-        onClick={() => {
-          console.log(
-            "toDos, ",
-            toDos,
-            " filtered Todos ",
-            filteredResults,
-            "mode",
-            mode
-          );
-        }}
-      >
-        To Do List
-      </h1>
+      <h1 className="h1">To Do List</h1>
       <form onSubmit={addToDoHandler} className="form">
         <input
           className={
