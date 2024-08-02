@@ -4,7 +4,7 @@ import { toDo } from "../../tyes";
 interface Props {
   toDo: toDo;
   onEdit: (val: string, editId: number) => void;
-  disabled: boolean;
+  disabled?: boolean;
   onDelete: (id: number) => void;
   setError: () => void;
   markDone: (id: number) => void;

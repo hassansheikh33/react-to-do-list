@@ -319,7 +319,6 @@ function App(): JSX.Element {
                   toDo={toDo}
                   onEdit={onEdit}
                   onDelete={onDelete}
-                  disabled={mode === "edit"}
                   markDone={markDoneHandler}
                   setError={() => {
                     setError({
@@ -338,7 +337,6 @@ function App(): JSX.Element {
                   toDo={toDo}
                   onEdit={onEdit}
                   onDelete={onDelete}
-                  disabled={mode === "edit"}
                   markDone={markDoneHandler}
                   setError={() => {
                     setError({
